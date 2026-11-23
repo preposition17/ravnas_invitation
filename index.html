@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Равиль и Анастасия — свадебное приглашение</title>
+<style>
+  body { margin: 0; background: #fff; color: #171313; text-align: center; font-family: Georgia, "Times New Roman", serif; }
+  section { min-height: 100svh; box-sizing: border-box; display: grid; align-content: center; justify-items: center; padding: 56px 24px; }
+  .venue-content { width: min(100%, 440px); }
+  .aligned-line { display: inline-block; white-space: nowrap; }
+  h1 { margin: 0 0 42px; font-size: 32px; font-weight: 400; line-height: 1.05; }
+  p { margin: 0 0 10px; font-size: clamp(18px, 5vw, 24px); line-height: 1.35; }
+  .handwritten { display: block; position: relative; left: 50%; width: min(150%, calc(100vw - 32px)); max-width: none; height: auto; transform: translateX(-50%); }
+  .invitation .handwritten { width: min(calc(100% + 24px), calc(100vw - 32px)); }
+  .handwritten-top { margin: 0 0 24px; }
+  .handwritten-bottom { margin: 42px 0 0; }
+  .intro { width: 100%; margin: 0 0 clamp(48px, 11vw, 76px); font-size: clamp(17px, 4.8vw, 23px); line-height: 1.4; text-align: justify; text-align-last: center; }
+  .address { font-size: var(--venue-font-size, 24px); }
+  a { color: inherit; text-underline-offset: 4px; }
+  .map { display: inline-grid; place-items: center; width: 100%; min-height: 52px; box-sizing: border-box; margin-top: 28px; padding: 12px 26px; background: #41080f; color: #fff; text-decoration: none; font-size: 19px; }
+  .map:hover { background: #57131c; }
+  a:focus-visible { outline: 2px solid #41080f; outline-offset: 4px; }
+  .invitation { width: min(100%, 540px); margin-inline: auto; background: #fff; }
+  .slide { display: block; width: 100%; height: auto; }
+  .invitation section { min-height: auto; padding-block: clamp(24px, 5vw, 36px); }
+  .invitation .handwritten-top { margin-bottom: 16px; }
+  .invitation .intro { width: var(--calendar-heading-width); margin-inline: auto; margin-bottom: clamp(25px, 6vw, 38px); }
+  .invitation h1 { width: var(--calendar-heading-width); margin-inline: auto; margin-bottom: 22px; }
+  .invitation .map { margin-top: 16px; }
+  .invitation .handwritten-bottom { margin-top: 22px; }
+  .slide-crop { overflow: hidden; }
+  .calendar-crop .raster { margin-bottom: -8.8889%; }
+  .day-plan-crop .raster { margin-top: -8.8889%; }
+  .palette-header { background: #fff; padding: clamp(32px, 8vw, 52px) 24px clamp(22px, 5vw, 32px); }
+  .palette-header h2 { margin: 0 auto 20px; width: min(100%, 390px); }
+  .palette-header h2 img { filter: brightness(0); display: block; width: 100%; height: auto; }
+  .palette-header p { max-width: 39ch; margin: 0 auto; color: #000; font-family: "Times New Roman", Times, serif; font-size: clamp(17px, 4.5vw, 21px); line-height: 1.45; }
+  .palette-divider { display: block; width: min(100%, 440px); height: auto; margin: 20px auto 0; }
+  .thanks-transition { height: clamp(100px, 23vw, 142px); background: #41080f; }
+  .thanks { position: relative; margin: 0; background: #41080f; container-type: inline-size; }
+  .thanks > .slide { mask-image: linear-gradient(to bottom, transparent, #000 2.8%, #000 97.2%, transparent); }
+  .thanks-copy { position: absolute; inset: 0; color: #41080f; font-family: "Times New Roman", Times, serif; }
+  /* The printed perforation and signatures bound the two text areas on the tray. */
+  .thanks-copy h2, .thanks-copy p { position: absolute; display: grid; align-content: center; margin: 0; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  .thanks-copy h2 { inset: 18.5% 42.5% 66.3% 25.5%; font-size: 5.1cqi; font-weight: 400; font-style: italic; line-height: 1.04; }
+  .thanks-copy p { inset: 37% 38.4% 33.1% 25.8%; font-size: 4cqi; line-height: 1.12; }
+  .thanks-love, .thanks-names { position: absolute; display: block; height: auto; }
+  .thanks-love { top: 69%; left: 27.4%; width: 17%; }
+  .thanks-names { top: 75%; right: 38.7%; width: 29%; }
+  .countdown { position: relative; overflow: hidden; box-sizing: border-box; background: #41080f; color: #fff; padding: clamp(46px, 12vw, 80px) 20px clamp(112px, 28vw, 154px); font-family: "Times New Roman", Times, serif; }
+  .countdown h2 { width: min(100%, 390px); margin: 0 auto 28px; }
+  .countdown h2 img { display: block; width: 100%; height: auto; }
+  .countdown-values { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; max-width: 420px; margin: 0 auto; }
+  .countdown-values div { display: flex; flex-direction: column-reverse; gap: 5px; }
+  .countdown-values dd { margin: 0; font-size: clamp(31px, 9vw, 53px); line-height: 1; }
+  .countdown-values dt { font-size: clamp(13px, 3.5vw, 17px); }
+  .countdown-flower { position: absolute; right: -3%; bottom: -5%; width: 43%; height: auto; pointer-events: none; }
+  .countdown-flower-left { right: auto; left: -17%; top: 7%; bottom: auto; width: 91%; opacity: .86; transform: scaleX(-1); }
+  .countdown h2, .countdown-values { position: relative; z-index: 1; }
+  .countdown h2 img { filter: drop-shadow(0 1px 3px #41080f); }
+  .countdown-values { text-shadow: 0 1px 4px #41080f, 0 0 12px #41080f; }
+  .countdown-values[hidden] { display: none; }
+  .countdown-date { position: relative; z-index: 1; text-shadow: 0 1px 4px #41080f; }
+  .leaf-trail { position: relative; z-index: 1; pointer-events: none; }
+  .leaf-trail img { position: absolute; display: block; width: 12%; opacity: .86; }
+  .leaf-trail img:nth-child(1) { bottom: -5%; left: 69%; width: 21%; transform: rotate(36deg) scaleX(-1); }
+  .leaf-trail img:nth-child(2) { bottom: 47%; left: 44%; width: 15%; transform: rotate(-16deg); }
+  .leaf-trail img:nth-child(3) { bottom: 99%; left: 10%; width: 5%; transform: rotate(-46deg); }
+
+  .raster { position: relative; }
+  #hero { contain: paint; }
+  .raster-layer { position: absolute; inset: 0; width: 100%; height: auto; display: none; pointer-events: none; }
+  .motion-ready :is(#hero, #day-plan, .layers-ready):not(.settled) .raster-layer { display: block; }
+  .motion-ready :is(#hero, .layers-ready):not(.settled) .original { opacity: 0; }
+  .raster-band { object-fit: cover; }
+  .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started) { opacity: 0; }
+  .motion-ready #day-plan .original { opacity: 1; }
+  .schedule-step { overflow: hidden; background: white; }
+  .schedule-step.finished { visibility: hidden; }
+  .schedule-ink { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
+  .schedule-step.started .schedule-ink { opacity: 1; }
+  @keyframes text-arrival {
+    from { opacity: 0; translate: 0 12px; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  @keyframes group-arrival {
+    from { opacity: 0; translate: 0 18px; }
+    to { opacity: 1; translate: 0 0; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .motion-ready [data-reveal]:not(.settled) .reveal-copy.started:not(.finished) { animation: group-arrival 700ms ease-out both; }
+    .motion-ready .schedule-step.started .schedule-ink { animation: text-arrival 540ms ease-out both; }
+    .motion-ready #hero.shown:not(.settled) .hero-paint { animation: hero-arrival 460ms ease-out both; }
+    .motion-ready #hero.shown:not(.settled) .hero-wipe {
+      mask-image: linear-gradient(var(--direction), transparent 46%, black 54%);
+      mask-size: 200% 100%;
+      mask-repeat: no-repeat;
+      animation: hero-wipe var(--duration, 460ms) ease-in-out var(--delay) both;
+    }
+    /* A double-width mask puts its feathered centre at x = 100% - mask-position. */
+    .hero-left { --direction: to right; --from: 108%; --to: 34%; --delay: 460ms; }
+    .hero-right { --direction: to left; --from: -8%; --to: 46%; --delay: 920ms; }
+    .hero-lettering { --delay: 1380ms; --duration: 540ms; }
+    /* The three horizontal bands divide the existing transparent lettering in its blank rows. */
+    .hero-ravil { clip-path: inset(0 0 54%); --direction: to left; --from: 80%; --to: 19%; }
+    .hero-amp { clip-path: inset(46% 0 47.4%); }
+    .hero-anastasia { clip-path: inset(52.6% 0 0); --direction: to right; --from: 7%; --to: 93%; }
+    .motion-ready #hero.shown:not(.settled) .hero-amp {
+      animation: hero-arrival var(--duration) ease-in-out var(--delay) both;
+    }
+    .motion-ready #hero:not(.shown) :is(.hero-paint, .hero-lettering) { opacity: 0; }
+  }
+  @keyframes hero-arrival { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes hero-wipe { from { mask-position: var(--from) 0; } to { mask-position: var(--to) 0; } }
+  @media (prefers-reduced-motion: reduce), print {
+    .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started), .motion-ready :is(#hero, .layers-ready):not(.settled) .original { opacity: 1; animation: none; }
+    .motion-ready :is(#hero, #day-plan, .layers-ready):not(.settled) .raster-layer { display: none; }
+  }
+  .leaf-trail img { height: auto; }
+  .invitation section { grid-template-columns: minmax(0, 1fr); }
+  .venue-content { min-width: 0; --calendar-heading-width: min(100%, 67.13vw, 362.5px); }
+</style>
+<noscript><style>
+  .aligned-line { white-space: normal; }
+  .invitation h1, .invitation .address { font-size: clamp(16px, 5.4vw, 27px); }
+  .invitation .address { width: var(--calendar-heading-width); margin-inline: auto; }
+</style></noscript>
+</head>
+<body>
+<main class="invitation" aria-label="Макет свадебного приглашения">
+  <div class="raster" id="hero" data-reveal>
+    <img class="slide original" src="01-hero.png" alt="Ravil &amp; Anastasia — Равиль и Анастасия" width="940" height="1673">
+    <div class="raster-layer hero-paint" aria-hidden="true"><img class="raster-layer" src="scroll-reveal/hero-background.png" alt="" width="940" height="1673"><img class="raster-layer hero-wipe hero-left" src="scroll-reveal/hero-left-cover.png" alt="" width="940" height="1673"><img class="raster-layer hero-wipe hero-right" src="scroll-reveal/hero-right-cover.png" alt="" width="940" height="1673"></div>
+    <img class="raster-layer hero-lettering hero-wipe hero-ravil" src="scroll-reveal/hero-text.png" alt="" width="940" height="1673">
+    <img class="raster-layer hero-lettering hero-amp" src="scroll-reveal/hero-text.png" alt="" width="940" height="1673">
+    <img class="raster-layer hero-lettering hero-wipe hero-anastasia" src="scroll-reveal/hero-text.png" alt="" width="940" height="1673">
+  </div>
+  <div class="raster" id="couple" data-reveal>
+    <img class="slide original" src="02-couple-date-handwritten.png" alt="Мы женимся! 29 мая 2027" width="1080" height="1920">
+    <img class="raster-layer" src="scroll-reveal/couple-background.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:8.33333333%;height:6.77083333%;object-position:center 8.93854749%" src="scroll-reveal/couple-text.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:88.54166667%;height:6.87500000%;object-position:center 95.07829978%" src="scroll-reveal/couple-text.png" alt="" width="1080" height="1920">
+  </div>
+  <div class="slide-crop calendar-crop"><div class="raster" id="calendar" data-reveal>
+    <img class="slide original" src="03-invitation-calendar-handwritten.png" alt="Дорогие родные и близкие! С огромной радостью и трепетом в сердце мы приглашаем вас разделить с нами самый важный и счастливый день нашей жизни — день нашей свадьбы! Мы будем счастливы видеть вас рядом, ведь именно вы — те люди, которые делают нашу жизнь ярче и счастливее. Суббота, 29 мая. Сохраните эту дату!" width="1080" height="1920">
+    <img class="raster-layer" src="scroll-reveal/calendar-background.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:10.93750000%;height:9.37500000%;object-position:center 12.06896552%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:25.31250000%;height:9.73958333%;object-position:center 28.04385459%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:37.81250000%;height:7.50000000%;object-position:center 40.87837838%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:56.66666667%;height:16.87500000%;object-position:center 68.17042607%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
+    <img class="raster-layer raster-band reveal-copy" style="top:86.97916667%;height:7.29166667%;object-position:center 93.82022472%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
+  </div></div>
+<section id="venue" data-reveal aria-labelledby="venue-heading">
+  <div class="venue-content">
+  <img class="reveal-copy handwritten handwritten-top" src="venue-handwriting-top.png" alt="Место нашей встречи" width="1874" height="237">
+  <p class="reveal-copy intro">Именно здесь состоится наш праздник — день, который мы будем вспоминать с теплотой ещё долгие годы!</p>
+  <h1 class="reveal-copy" id="venue-heading"><span class="aligned-line">Адрес проведения торжества</span></h1>
+  <p class="reveal-copy"><a href="https://www.versal-ufa.ru/" class="aligned-line venue-name">Ресторанный комплекс «Версаль»</a></p>
+  <p class="reveal-copy address"><span class="aligned-line">Уфа, улица Элеваторная, 13</span></p>
+  <a class="map" href="https://yandex.ru/maps/?text=%D0%A3%D1%84%D0%B0%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%AD%D0%BB%D0%B5%D0%B2%D0%B0%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F%2C%2013"><span class="reveal-copy">Посмотреть на карте</span></a>
+  <img class="reveal-copy handwritten handwritten-bottom" src="venue-handwriting-bottom.png" alt="Увидимся в Версале!" width="1788" height="271">
+  </div>
+</section>
+  <div class="slide-crop day-plan-crop"><div class="raster" id="day-plan" data-reveal>
+    <img class="slide original" src="04-day-plan-white.png" alt="План дня. 16:00 — сбор гостей. 16:30 — торжественная регистрация. 17:00 — праздничный банкет. 22:00 — завершение." width="1080" height="1920">
+    
+    <div class="raster-layer schedule-step" data-step="heading" style="top:6.25000000%;height:8.33333333%"><img class="schedule-ink" style="object-position:center 6.81818182%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
+    <div class="raster-layer schedule-step" data-step="16:00" style="top:16.66666667%;height:13.54166667%"><img class="schedule-ink" style="object-position:center 19.27710843%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
+    <div class="raster-layer schedule-step" data-step="16:30" style="top:37.50000000%;height:14.01041667%"><img class="schedule-ink" style="object-position:center 43.60993337%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
+    <div class="raster-layer schedule-step" data-step="17:00" style="top:58.33333333%;height:14.01041667%"><img class="schedule-ink" style="object-position:center 67.83767414%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
+    <div class="raster-layer schedule-step" data-step="22:00" style="top:79.16666667%;height:13.54166667%"><img class="schedule-ink" style="object-position:center 91.56626506%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
+  </div></div>
+  <article data-reveal class="palette" id="dress-code" aria-labelledby="palette-heading">
+    <div class="palette-header">
+      <h2 class="reveal-copy" id="palette-heading"><img src="palette-heading.png" alt="Основная палитра" width="2061" height="292"></h2>
+      <p class="reveal-copy">У нас нет строгого дресс-кода. Нам будет очень приятно, если вы поддержите атмосферу нашего праздника.</p>
+      <img class="palette-divider" src="palette-divider.png" alt="" width="906" height="45">
+    </div>
+    <img class="slide" src="dress-code-collage-fabric-grid-crossfolds.png" alt="Дресс-код: оливковая, коричневая, чёрная, бордовая ткани и айвори между двумя живописными фрагментами" width="1536" height="1024">
+  </article>
+  <div class="thanks-transition" aria-hidden="true"></div>
+  <article data-reveal class="thanks" id="thank-you" aria-labelledby="thank-you-heading">
+    <img class="slide" src="thank-you-tray-no-rose.jpg" alt="" width="1086" height="1448">
+    <div class="thanks-copy">
+      <h2 class="reveal-copy" id="thank-you-heading">До скорой встречи!</h2>
+      <p class="reveal-copy">Спасибо, что вы рядом. Мы с нетерпением ждём дня, когда соберём вас всех за одним столом.</p>
+      <img class="thanks-love reveal-copy" src="thanks-with-love.png" alt="С любовью," width="952" height="182">
+      <img class="thanks-names reveal-copy" src="thanks-names.png" alt="Равиль и Анастасия" width="1828" height="203">
+    </div>
+  </article>
+  <div class="thanks-transition leaf-trail" aria-hidden="true">
+    <img src="countdown-olive-leaf.png" alt="" width="315" height="165">
+    <img src="countdown-leaf-curved.png" alt="" width="337" height="127">
+    <img src="countdown-leaf-narrow.png" alt="" width="86" height="265">
+  </div>
+  <article data-reveal class="countdown" id="countdown" aria-labelledby="countdown-heading">
+    <h2 class="reveal-copy" id="countdown-heading"><img src="countdown-heading.png" alt="До свадьбы осталось" width="2144" height="274"></h2>
+    <p class="countdown-date"><time datetime="2027-05-29T16:00:00+05:00">29 мая 2027 года, 16:00 по Уфе</time></p>
+    <dl class="countdown-values reveal-copy" hidden>
+      <div><dt>дней</dt><dd></dd></div>
+      <div><dt>часов</dt><dd></dd></div>
+      <div><dt>минут</dt><dd></dd></div>
+      <div><dt>секунд</dt><dd></dd></div>
+    </dl>
+    <img class="countdown-flower" src="countdown-flower.png" alt="">
+    <img class="countdown-flower countdown-flower-left" src="countdown-flower.png" alt="">
+  </article>
+</main>
+<script>
+(() => {
+  const date = document.querySelector('.countdown-date');
+  const deadline = Date.parse(date.querySelector('time').dateTime);
+  const values = document.querySelector('.countdown-values');
+  const [days, hours, minutes, seconds] = values.querySelectorAll('dd');
+  let timeout;
+
+  function update() {
+    clearTimeout(timeout);
+    const remaining = Math.max(0, deadline - Date.now());
+    const total = Math.ceil(remaining / 1000);
+    days.textContent = Math.floor(total / 86400);
+    hours.textContent = String(Math.floor(total / 3600) % 24).padStart(2, '0');
+    minutes.textContent = String(Math.floor(total / 60) % 60).padStart(2, '0');
+    seconds.textContent = String(total % 60).padStart(2, '0');
+    if (remaining > 0 && !document.hidden) {
+      timeout = setTimeout(update, remaining % 1000 || 1000);
+    }
+  }
+
+  update();
+  date.hidden = true;
+  values.hidden = false;
+  document.addEventListener('visibilitychange', update);
+  window.addEventListener('pageshow', update);
+})();
+</script>
+<script>
+  const column = document.querySelector('.venue-content');
+  const venueName = column.querySelector('.venue-name');
+  const venueHeading = column.querySelector('h1 .aligned-line');
+  const addressLine = column.querySelector('.address .aligned-line');
+
+  function fitLine(line, width) {
+    line.style.fontSize = '24px';
+    line.style.fontSize = `${24 * width / line.getBoundingClientRect().width}px`;
+  }
+
+  function alignText() {
+    fitLine(venueName, column.getBoundingClientRect().width);
+    column.style.setProperty('--venue-font-size', venueName.style.fontSize);
+    const targetWidth = column.querySelector('h1').getBoundingClientRect().width;
+    fitLine(venueHeading, targetWidth);
+    fitLine(addressLine, targetWidth);
+  }
+
+  alignText();
+  if ('ResizeObserver' in window) new ResizeObserver(alignText).observe(column);
+  else window.addEventListener('resize', alignText);
+  if (document.fonts) document.fonts.ready.then(alignText);
+</script>
+<script>
+(() => {
+  if (!('IntersectionObserver' in window) || !window.matchMedia ||
+      !window.CSS || !CSS.supports('translate', '0 12px')) return;
+  const motion = matchMedia('(prefers-reduced-motion: no-preference)');
+  if (!motion.matches) return;
+
+  const blocks = document.querySelectorAll('[data-reveal]');
+  const hero = document.getElementById('hero');
+  const schedule = document.getElementById('day-plan');
+  const steps = [...schedule.querySelectorAll('.schedule-step')];
+  let queued = 0;
+  let sequence;
+  let nextStart = 0;
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      if (entry.target.classList.contains('schedule-step')) revealThrough(entry.target);
+      else revealHero();
+    }
+  });
+
+  // Observe the ink itself slightly inside the viewport. The decorative slide can enter much earlier.
+  const groupObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting || entry.intersectionRatio < 0.25) continue;
+      groupObserver.unobserve(entry.target);
+      entry.target.classList.add('started');
+    }
+  }, { rootMargin: '0px 0px -48px 0px', threshold: 0.25 });
+
+  function settle(block) {
+    observer.unobserve(block);
+    if (block === schedule) steps.forEach(step => observer.unobserve(step));
+    block.querySelectorAll('.reveal-copy').forEach(group => groupObserver.unobserve(group));
+    block.classList.add('shown', 'settled');
+  }
+
+  function decodeImages(element) {
+    const images = element.matches('img') ? [element] : element.querySelectorAll('img');
+    return Promise.all(Array.from(images, img => img.decode()));
+  }
+
+  async function observeGroups(block) {
+    const groups = block.querySelectorAll('.reveal-copy');
+    if (block.classList.contains('raster')) {
+      // Keep the original in place until the background and every lettering strip can be painted.
+      try { await decodeImages(block); } catch { settle(block); return; }
+      if (block.classList.contains('settled')) return;
+      block.classList.add('layers-ready');
+      groups.forEach(group => groupObserver.observe(group));
+      return;
+    }
+    for (const group of groups) {
+      // A late image should start only if its group is visible after decoding.
+      decodeImages(group).then(() => {
+        if (!block.classList.contains('settled') && !group.classList.contains('finished')) groupObserver.observe(group);
+      }).catch(() => finishGroup(group));
+    }
+  }
+
+  function finishGroup(group) {
+    groupObserver.unobserve(group);
+    group.classList.add('started', 'finished');
+    const block = group.closest('[data-reveal]');
+    if (!block.querySelector('.reveal-copy:not(.finished)')) settle(block);
+  }
+
+  function revealThrough(step) {
+    if (schedule.classList.contains('settled')) return;
+    if (!sequence) sequence = decodeImages(schedule);
+    // A scroll jump can enter the middle of the plan. Queue earlier rows first.
+    while (queued <= steps.indexOf(step)) {
+      const current = steps[queued++];
+      observer.unobserve(current);
+      sequence = sequence.then(async () => {
+        const delay = nextStart - performance.now();
+        if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
+        if (schedule.classList.contains('settled')) return;
+        current.classList.add('started');
+        nextStart = performance.now() + 180;
+      }).catch(() => settle(schedule));
+    }
+  }
+
+  async function revealHero() {
+    observer.unobserve(hero);
+    if (hero.classList.contains('shown')) return;
+    try {
+      await decodeImages(hero);
+      hero.classList.add('shown');
+    } catch { settle(hero); }
+  }
+
+  function showDestination() {
+    let element = document.querySelector(':target');
+    try {
+      if (location.hash) element = document.getElementById(decodeURIComponent(location.hash.slice(1))) || element;
+    } catch { /* A malformed fragment has no matching section. */ }
+    const block = element && element.closest('[data-reveal]');
+    if (block) settle(block);
+  }
+
+  document.addEventListener('animationend', event => {
+    if (event.target.classList.contains('hero-amp')) {
+      settle(hero);
+      return;
+    }
+    if (event.animationName === 'group-arrival') {
+      finishGroup(event.target);
+      return;
+    }
+    if (event.animationName !== 'text-arrival') return;
+    if (event.target.classList.contains('schedule-ink')) {
+      const step = event.target.parentElement;
+      step.classList.add('finished'); // Uncover this row on the original as soon as its motion ends.
+      if (step !== steps[steps.length - 1]) return;
+    }
+    settle(event.target.closest('[data-reveal]'));
+  });
+  document.addEventListener('focusin', event => {
+    const group = event.target.closest('.reveal-copy') || event.target.querySelector('.reveal-copy');
+    if (group) finishGroup(group);
+  });
+  window.addEventListener('hashchange', showDestination);
+  function motionChanged() {
+    if (!motion.matches) blocks.forEach(settle);
+  }
+  if (motion.addEventListener) motion.addEventListener('change', motionChanged);
+  else motion.addListener(motionChanged);
+
+  blocks.forEach(block => {
+    if (block === hero && !CSS.supports('mask-image', 'linear-gradient(to right, transparent, black)')) settle(hero);
+    else if (block === schedule) steps.forEach(step => observer.observe(step));
+    else if (block === hero) observer.observe(hero);
+    else observeGroups(block);
+  });
+  showDestination();
+  document.documentElement.classList.add('motion-ready');
+})();
+</script>
+</body>
+</html>
+
