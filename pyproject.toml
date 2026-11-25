@@ -1,0 +1,9 @@
+[project]
+name = "ravnas-invitation"
+version = "0.1.0"
+description = "Local development tools for the wedding invitation website"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.uv]
+package = false

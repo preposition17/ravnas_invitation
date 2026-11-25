@@ -9,7 +9,7 @@
   section { min-height: 100svh; box-sizing: border-box; display: grid; align-content: center; justify-items: center; padding: 56px 24px; }
   .venue-content { width: min(100%, 440px); }
   .aligned-line { display: inline-block; white-space: nowrap; }
-  h1 { margin: 0 0 42px; font-size: 32px; font-weight: 400; line-height: 1.05; }
+  #venue-heading { margin: 0 0 42px; font-size: 32px; font-weight: 400; line-height: 1.05; }
   p { margin: 0 0 10px; font-size: clamp(18px, 5vw, 24px); line-height: 1.35; }
   .handwritten { display: block; position: relative; left: 50%; width: min(150%, calc(100vw - 32px)); max-width: none; height: auto; transform: translateX(-50%); }
   .invitation .handwritten { width: min(calc(100% + 24px), calc(100vw - 32px)); }
@@ -26,15 +26,13 @@
   .invitation section { min-height: auto; padding-block: clamp(24px, 5vw, 36px); }
   .invitation .handwritten-top { margin-bottom: 16px; }
   .invitation .intro { width: var(--calendar-heading-width); margin-inline: auto; margin-bottom: clamp(25px, 6vw, 38px); }
-  .invitation h1 { width: var(--calendar-heading-width); margin-inline: auto; margin-bottom: 22px; }
+  #venue-heading { width: var(--calendar-heading-width); margin-inline: auto; margin-bottom: 22px; }
   .invitation .map { margin-top: 16px; }
   .invitation .handwritten-bottom { margin-top: 22px; }
   .slide-crop { overflow: hidden; }
   .calendar-crop .raster { margin-bottom: -8.8889%; }
-  .day-plan-crop .raster { margin-top: -8.8889%; }
   .palette-header { background: #fff; padding: clamp(32px, 8vw, 52px) 24px clamp(22px, 5vw, 32px); }
   .palette-header h2 { margin: 0 auto 20px; width: min(100%, 390px); }
-  .palette-header h2 img { filter: brightness(0); display: block; width: 100%; height: auto; }
   .palette-header p { max-width: 39ch; margin: 0 auto; color: #000; font-family: "Times New Roman", Times, serif; font-size: clamp(17px, 4.5vw, 21px); line-height: 1.45; }
   .palette-divider { display: block; width: min(100%, 440px); height: auto; margin: 20px auto 0; }
   .thanks-transition { height: clamp(100px, 23vw, 142px); background: #41080f; }
@@ -42,15 +40,14 @@
   .thanks > .slide { mask-image: linear-gradient(to bottom, transparent, #000 2.8%, #000 97.2%, transparent); }
   .thanks-copy { position: absolute; inset: 0; color: #41080f; font-family: "Times New Roman", Times, serif; }
   /* The printed perforation and signatures bound the two text areas on the tray. */
-  .thanks-copy h2, .thanks-copy p { position: absolute; display: grid; align-content: center; margin: 0; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  .thanks-copy h2, .thanks-copy p:not(.script-copy) { position: absolute; display: grid; align-content: center; margin: 0; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   .thanks-copy h2 { inset: 18.5% 42.5% 66.3% 25.5%; font-size: 5.1cqi; font-weight: 400; font-style: italic; line-height: 1.04; }
-  .thanks-copy p { inset: 37% 38.4% 33.1% 25.8%; font-size: 4cqi; line-height: 1.12; }
+  .thanks-copy p:not(.script-copy) { inset: 37% 38.4% 33.1% 25.8%; font-size: 4cqi; line-height: 1.12; }
   .thanks-love, .thanks-names { position: absolute; display: block; height: auto; }
   .thanks-love { top: 69%; left: 27.4%; width: 17%; }
   .thanks-names { top: 75%; right: 38.7%; width: 29%; }
   .countdown { position: relative; overflow: hidden; box-sizing: border-box; background: #41080f; color: #fff; padding: clamp(46px, 12vw, 80px) 20px clamp(112px, 28vw, 154px); font-family: "Times New Roman", Times, serif; }
   .countdown h2 { width: min(100%, 390px); margin: 0 auto 28px; }
-  .countdown h2 img { display: block; width: 100%; height: auto; }
   .countdown-values { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 7px; max-width: 420px; margin: 0 auto; }
   .countdown-values div { display: flex; flex-direction: column-reverse; gap: 5px; }
   .countdown-values dd { margin: 0; font-size: clamp(31px, 9vw, 53px); line-height: 1; }
@@ -58,7 +55,6 @@
   .countdown-flower { position: absolute; right: -3%; bottom: -5%; width: 43%; height: auto; pointer-events: none; }
   .countdown-flower-left { right: auto; left: -17%; top: 7%; bottom: auto; width: 91%; opacity: .86; transform: scaleX(-1); }
   .countdown h2, .countdown-values { position: relative; z-index: 1; }
-  .countdown h2 img { filter: drop-shadow(0 1px 3px #41080f); }
   .countdown-values { text-shadow: 0 1px 4px #41080f, 0 0 12px #41080f; }
   .countdown-values[hidden] { display: none; }
   .countdown-date { position: relative; z-index: 1; text-shadow: 0 1px 4px #41080f; }
@@ -69,29 +65,30 @@
   .leaf-trail img:nth-child(3) { bottom: 99%; left: 10%; width: 5%; transform: rotate(-46deg); }
 
   .raster { position: relative; }
-  #hero { contain: paint; }
-  .raster-layer { position: absolute; inset: 0; width: 100%; height: auto; display: none; pointer-events: none; }
-  .motion-ready :is(#hero, #day-plan, .layers-ready):not(.settled) .raster-layer { display: block; }
-  .motion-ready :is(#hero, .layers-ready):not(.settled) .original { opacity: 0; }
-  .raster-band { object-fit: cover; }
-  .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started) { opacity: 0; }
-  .motion-ready #day-plan .original { opacity: 1; }
-  .schedule-step { overflow: hidden; background: white; }
-  .schedule-step.finished { visibility: hidden; }
-  .schedule-ink { display: block; width: 100%; height: 100%; object-fit: cover; opacity: 0; }
-  .schedule-step.started .schedule-ink { opacity: 1; }
-  @keyframes text-arrival {
-    from { opacity: 0; translate: 0 12px; }
-    to { opacity: 1; translate: 0 0; }
+  #hero { aspect-ratio: 940 / 1673; contain: paint; background: #284d5c; }
+  .hero-landscape, .hero-depth { position: absolute; inset: 0; pointer-events: none; }
+  .hero-landscape {
+    /* The 1092 × 1941 layers include 76px on each side and 134px above and below the hero crop. */
+    inset: -8.01% -8.085%;
+    transform: scale(1.06);
   }
+  .hero-depth { width: 100%; height: 100%; }
+  .hero-sea > img, .hero-sea > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hero-sea.is-animated > img { visibility: hidden; }
+  .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started) { opacity: 0; }
   @keyframes group-arrival {
     from { opacity: 0; translate: 0 18px; }
     to { opacity: 1; translate: 0 0; }
   }
   @media (prefers-reduced-motion: no-preference) {
+    .hero-depth {
+      transform: translate3d(
+        calc(var(--pointer-x, 0px) * var(--pointer-depth)),
+        calc(var(--scroll-y, 0px) * var(--scroll-depth) + var(--pointer-y, 0px) * var(--pointer-depth)),
+        0
+      );
+    }
     .motion-ready [data-reveal]:not(.settled) .reveal-copy.started:not(.finished) { animation: group-arrival 700ms ease-out both; }
-    .motion-ready .schedule-step.started .schedule-ink { animation: text-arrival 540ms ease-out both; }
-    .motion-ready #hero.shown:not(.settled) .hero-paint { animation: hero-arrival 460ms ease-out both; }
     .motion-ready #hero.shown:not(.settled) .hero-wipe {
       mask-image: linear-gradient(var(--direction), transparent 46%, black 54%);
       mask-size: 200% 100%;
@@ -99,81 +96,126 @@
       animation: hero-wipe var(--duration, 460ms) ease-in-out var(--delay) both;
     }
     /* A double-width mask puts its feathered centre at x = 100% - mask-position. */
-    .hero-left { --direction: to right; --from: 108%; --to: 34%; --delay: 460ms; }
-    .hero-right { --direction: to left; --from: -8%; --to: 46%; --delay: 920ms; }
-    .hero-lettering { --delay: 1380ms; --duration: 540ms; }
-    /* The three horizontal bands divide the existing transparent lettering in its blank rows. */
-    .hero-ravil { clip-path: inset(0 0 54%); --direction: to left; --from: 80%; --to: 19%; }
-    .hero-amp { clip-path: inset(46% 0 47.4%); }
-    .hero-anastasia { clip-path: inset(52.6% 0 0); --direction: to right; --from: 7%; --to: 93%; }
+    .hero-lettering { --delay: 240ms; --duration: 540ms; }
+    .hero-ravil { --direction: to left; --from: 110%; --to: -10%; }
+    .hero-anastasia { --direction: to right; --from: -10%; --to: 110%; }
     .motion-ready #hero.shown:not(.settled) .hero-amp {
       animation: hero-arrival var(--duration) ease-in-out var(--delay) both;
     }
-    .motion-ready #hero:not(.shown) :is(.hero-paint, .hero-lettering) { opacity: 0; }
+    .motion-ready #hero:not(.shown) .hero-lettering { opacity: 0; }
   }
   @keyframes hero-arrival { from { opacity: 0; } to { opacity: 1; } }
   @keyframes hero-wipe { from { mask-position: var(--from) 0; } to { mask-position: var(--to) 0; } }
   @media (prefers-reduced-motion: reduce), print {
-    .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started), .motion-ready :is(#hero, .layers-ready):not(.settled) .original { opacity: 1; animation: none; }
-    .motion-ready :is(#hero, #day-plan, .layers-ready):not(.settled) .raster-layer { display: none; }
+    .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started),
+    .motion-ready #hero:not(.settled) .hero-lettering { opacity: 1; animation: none; mask-image: none; }
+    .hero-depth { transform: none; }
+    .hero-sea.is-animated > img { visibility: visible; }
+    .hero-sea > canvas { display: none; }
   }
   .leaf-trail img { height: auto; }
   .invitation section { grid-template-columns: minmax(0, 1fr); }
   .venue-content { min-width: 0; --calendar-heading-width: min(100%, 67.13vw, 362.5px); }
 </style>
+<link rel="stylesheet" href="invitation-text.css">
 <noscript><style>
   .aligned-line { white-space: normal; }
-  .invitation h1, .invitation .address { font-size: clamp(16px, 5.4vw, 27px); }
+  #venue-heading, .invitation .address { font-size: clamp(16px, 5.4vw, 27px); }
   .invitation .address { width: var(--calendar-heading-width); margin-inline: auto; }
 </style></noscript>
+<link rel="stylesheet" href="schedule.css">
 </head>
 <body>
-<main class="invitation" aria-label="Макет свадебного приглашения">
+<main class="invitation" aria-label="Свадебное приглашение Равиля и Анастасии">
   <div class="raster" id="hero" data-reveal>
-    <img class="slide original" src="01-hero.png" alt="Ravil &amp; Anastasia — Равиль и Анастасия" width="940" height="1673">
-    <div class="raster-layer hero-paint" aria-hidden="true"><img class="raster-layer" src="scroll-reveal/hero-background.png" alt="" width="940" height="1673"><img class="raster-layer hero-wipe hero-left" src="scroll-reveal/hero-left-cover.png" alt="" width="940" height="1673"><img class="raster-layer hero-wipe hero-right" src="scroll-reveal/hero-right-cover.png" alt="" width="940" height="1673"></div>
-    <img class="raster-layer hero-lettering hero-wipe hero-ravil" src="scroll-reveal/hero-text.png" alt="" width="940" height="1673">
-    <img class="raster-layer hero-lettering hero-amp" src="scroll-reveal/hero-text.png" alt="" width="940" height="1673">
-    <img class="raster-layer hero-lettering hero-wipe hero-anastasia" src="scroll-reveal/hero-text.png" alt="" width="940" height="1673">
+    <div class="hero-landscape" aria-hidden="true">
+      <img class="hero-depth" style="--scroll-depth: .96; --pointer-depth: .16" src="assets/images/first_background_9_16_parallax/01-sky.png" alt="" width="1092" height="1941" fetchpriority="high">
+      <div class="hero-depth hero-sea" style="--scroll-depth: .88; --pointer-depth: .27">
+        <img src="assets/images/first_background_9_16_parallax/02-sea-still.webp" alt="" width="1092" height="1941" fetchpriority="high">
+        <canvas hidden></canvas>
+      </div>
+      <img class="hero-depth" style="--scroll-depth: .81; --pointer-depth: .38" src="assets/images/first_background_9_16_parallax/03-coast-far.png" alt="" width="1092" height="1941">
+      <img class="hero-depth" style="--scroll-depth: .75; --pointer-depth: .49" src="assets/images/first_background_9_16_parallax/04-coast-mid-far.png" alt="" width="1092" height="1941">
+      <img class="hero-depth" style="--scroll-depth: .69; --pointer-depth: .60" src="assets/images/first_background_9_16_parallax/05-coast-mid-near.png" alt="" width="1092" height="1941">
+      <img class="hero-depth" style="--scroll-depth: .61; --pointer-depth: .71" src="assets/images/first_background_9_16_parallax/06-coast-near.png" alt="" width="1092" height="1941">
+      <img class="hero-depth" style="--scroll-depth: .31; --pointer-depth: .82" src="assets/images/first_background_9_16_parallax/07-ground.png" alt="" width="1092" height="1941">
+      <img class="hero-depth" style="--scroll-depth: .22; --pointer-depth: .88" src="assets/images/first_background_9_16_parallax/08-tree.png" alt="" width="1092" height="1941">
+      <img class="hero-depth" style="--scroll-depth: .14; --pointer-depth: 1" src="assets/images/first_background_9_16_parallax/09-flowers.png" alt="" width="1092" height="1941">
+    </div>
+    <h1 class="hero-names" lang="en" aria-label="Ravil &amp; Anastasia">
+      <span class="hero-lettering hero-wipe hero-ravil">Ravil</span>
+      <span class="hero-lettering hero-amp">&amp;</span>
+      <span class="hero-lettering hero-wipe hero-anastasia">Anastasia</span>
+    </h1>
   </div>
   <div class="raster" id="couple" data-reveal>
-    <img class="slide original" src="02-couple-date-handwritten.png" alt="Мы женимся! 29 мая 2027" width="1080" height="1920">
-    <img class="raster-layer" src="scroll-reveal/couple-background.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:8.33333333%;height:6.77083333%;object-position:center 8.93854749%" src="scroll-reveal/couple-text.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:88.54166667%;height:6.87500000%;object-position:center 95.07829978%" src="scroll-reveal/couple-text.png" alt="" width="1080" height="1920">
+    <img class="slide" src="scroll-reveal/couple-background.png" alt="Равиль и Анастасия в кружевной рамке" width="1080" height="1920">
+    <h2 class="couple-heading reveal-copy">Мы женимся!</h2>
+    <time class="couple-date script-copy reveal-copy" datetime="2027-05-29">29 мая 2027</time>
   </div>
   <div class="slide-crop calendar-crop"><div class="raster" id="calendar" data-reveal>
-    <img class="slide original" src="03-invitation-calendar-handwritten.png" alt="Дорогие родные и близкие! С огромной радостью и трепетом в сердце мы приглашаем вас разделить с нами самый важный и счастливый день нашей жизни — день нашей свадьбы! Мы будем счастливы видеть вас рядом, ведь именно вы — те люди, которые делают нашу жизнь ярче и счастливее. Суббота, 29 мая. Сохраните эту дату!" width="1080" height="1920">
-    <img class="raster-layer" src="scroll-reveal/calendar-background.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:10.93750000%;height:9.37500000%;object-position:center 12.06896552%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:25.31250000%;height:9.73958333%;object-position:center 28.04385459%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:37.81250000%;height:7.50000000%;object-position:center 40.87837838%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:56.66666667%;height:16.87500000%;object-position:center 68.17042607%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
-    <img class="raster-layer raster-band reveal-copy" style="top:86.97916667%;height:7.29166667%;object-position:center 93.82022472%" src="scroll-reveal/calendar-text.png" alt="" width="1080" height="1920">
+    <img class="slide" src="scroll-reveal/calendar-background.png" alt="" width="1080" height="1920">
+    <h2 class="calendar-heading reveal-copy">Дорогие<br>родные и близкие!</h2>
+    <p class="calendar-message calendar-message-first reveal-copy">С огромной радостью и трепетом в сердце мы приглашаем вас разделить с нами самый важный и счастливый день нашей жизни — день нашей свадьбы!</p>
+    <p class="calendar-message calendar-message-second reveal-copy">Мы будем счастливы видеть вас рядом, ведь именно вы — те люди, которые делают нашу жизнь ярче и счастливее.</p>
+    <div class="calendar-days reveal-copy" aria-label="Май 2027 года">
+      <div class="calendar-day"><span class="calendar-weekday">Пятница</span><time datetime="2027-05-28">28</time></div>
+      <div class="calendar-day calendar-wedding"><span class="calendar-weekday">Суббота</span><time datetime="2027-05-29">29</time><span class="calendar-note">тот самый<br>день!</span></div>
+      <div class="calendar-day"><span class="calendar-weekday">Воскресенье</span><time datetime="2027-05-30">30</time></div>
+    </div>
+    <p class="calendar-save script-copy reveal-copy">Сохраните эту дату!</p>
   </div></div>
-<section id="venue" data-reveal aria-labelledby="venue-heading">
+<section id="venue" data-reveal aria-labelledby="venue-title">
   <div class="venue-content">
-  <img class="reveal-copy handwritten handwritten-top" src="venue-handwriting-top.png" alt="Место нашей встречи" width="1874" height="237">
+  <h2 class="reveal-copy handwritten handwritten-top script-copy script-frame" id="venue-title"><span>Место нашей встречи</span></h2>
   <p class="reveal-copy intro">Именно здесь состоится наш праздник — день, который мы будем вспоминать с теплотой ещё долгие годы!</p>
-  <h1 class="reveal-copy" id="venue-heading"><span class="aligned-line">Адрес проведения торжества</span></h1>
+  <h3 class="reveal-copy" id="venue-heading"><span class="aligned-line">Адрес проведения торжества</span></h3>
   <p class="reveal-copy"><a href="https://www.versal-ufa.ru/" class="aligned-line venue-name">Ресторанный комплекс «Версаль»</a></p>
   <p class="reveal-copy address"><span class="aligned-line">Уфа, улица Элеваторная, 13</span></p>
   <a class="map" href="https://yandex.ru/maps/?text=%D0%A3%D1%84%D0%B0%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%AD%D0%BB%D0%B5%D0%B2%D0%B0%D1%82%D0%BE%D1%80%D0%BD%D0%B0%D1%8F%2C%2013"><span class="reveal-copy">Посмотреть на карте</span></a>
-  <img class="reveal-copy handwritten handwritten-bottom" src="venue-handwriting-bottom.png" alt="Увидимся в Версале!" width="1788" height="271">
+  <p class="reveal-copy handwritten handwritten-bottom script-copy script-frame"><span>Увидимся в Версале!</span></p>
   </div>
 </section>
-  <div class="slide-crop day-plan-crop"><div class="raster" id="day-plan" data-reveal>
-    <img class="slide original" src="04-day-plan-white.png" alt="План дня. 16:00 — сбор гостей. 16:30 — торжественная регистрация. 17:00 — праздничный банкет. 22:00 — завершение." width="1080" height="1920">
-    
-    <div class="raster-layer schedule-step" data-step="heading" style="top:6.25000000%;height:8.33333333%"><img class="schedule-ink" style="object-position:center 6.81818182%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
-    <div class="raster-layer schedule-step" data-step="16:00" style="top:16.66666667%;height:13.54166667%"><img class="schedule-ink" style="object-position:center 19.27710843%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
-    <div class="raster-layer schedule-step" data-step="16:30" style="top:37.50000000%;height:14.01041667%"><img class="schedule-ink" style="object-position:center 43.60993337%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
-    <div class="raster-layer schedule-step" data-step="17:00" style="top:58.33333333%;height:14.01041667%"><img class="schedule-ink" style="object-position:center 67.83767414%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
-    <div class="raster-layer schedule-step" data-step="22:00" style="top:79.16666667%;height:13.54166667%"><img class="schedule-ink" style="object-position:center 91.56626506%" src="scroll-reveal/schedule-text.png" alt="" width="1080" height="1920"></div>
-  </div></div>
+  <div class="slide-crop day-plan-crop">
+    <section class="schedule" id="day-plan" aria-labelledby="schedule-heading">
+      <h2 class="schedule-heading" id="schedule-heading">ПЛАН ДНЯ</h2>
+      <ol class="schedule-list">
+        <li class="schedule-row">
+          <div class="schedule-content">
+            <time class="schedule-time" datetime="2027-05-29T16:00:00+05:00">16:00</time>
+            <span class="schedule-label"><span class="schedule-label-line" style="--schedule-label-width: .76255">Сбор гостей</span></span>
+          </div>
+        </li>
+        <li class="schedule-row">
+          <div class="schedule-content">
+            <time class="schedule-time" datetime="2027-05-29T16:30:00+05:00">16:30</time>
+            <span class="schedule-label">
+              <span class="schedule-label-line" style="--schedule-label-width: .58124">Торжественная</span>
+              <span class="schedule-label-line" style="--schedule-label-width: .72323">регистрация</span>
+            </span>
+          </div>
+        </li>
+        <li class="schedule-row">
+          <div class="schedule-content">
+            <time class="schedule-time" datetime="2027-05-29T17:00:00+05:00">17:00</time>
+            <span class="schedule-label">
+              <span class="schedule-label-line" style="--schedule-label-width: .68615">Праздничный</span>
+              <span class="schedule-label-line" style="--schedule-label-width: 1.01463">банкет</span>
+            </span>
+          </div>
+        </li>
+        <li class="schedule-row">
+          <div class="schedule-content">
+            <time class="schedule-time" datetime="2027-05-29T22:00:00+05:00">22:00</time>
+            <span class="schedule-label"><span class="schedule-label-line" style="--schedule-label-width: .75323">Завершение</span></span>
+          </div>
+        </li>
+      </ol>
+    </section>
+  </div>
   <article data-reveal class="palette" id="dress-code" aria-labelledby="palette-heading">
     <div class="palette-header">
-      <h2 class="reveal-copy" id="palette-heading"><img src="palette-heading.png" alt="Основная палитра" width="2061" height="292"></h2>
+      <h2 class="reveal-copy script-copy script-frame" id="palette-heading"><span>Основная палитра</span></h2>
       <p class="reveal-copy">У нас нет строгого дресс-кода. Нам будет очень приятно, если вы поддержите атмосферу нашего праздника.</p>
       <img class="palette-divider" src="palette-divider.png" alt="" width="906" height="45">
     </div>
@@ -185,8 +227,8 @@
     <div class="thanks-copy">
       <h2 class="reveal-copy" id="thank-you-heading">До скорой встречи!</h2>
       <p class="reveal-copy">Спасибо, что вы рядом. Мы с нетерпением ждём дня, когда соберём вас всех за одним столом.</p>
-      <img class="thanks-love reveal-copy" src="thanks-with-love.png" alt="С любовью," width="952" height="182">
-      <img class="thanks-names reveal-copy" src="thanks-names.png" alt="Равиль и Анастасия" width="1828" height="203">
+      <p class="thanks-love script-copy script-frame reveal-copy"><span>С любовью,</span></p>
+      <p class="thanks-names script-copy script-frame reveal-copy"><span>Равиль и Анастасия</span></p>
     </div>
   </article>
   <div class="thanks-transition leaf-trail" aria-hidden="true">
@@ -195,7 +237,7 @@
     <img src="countdown-leaf-narrow.png" alt="" width="86" height="265">
   </div>
   <article data-reveal class="countdown" id="countdown" aria-labelledby="countdown-heading">
-    <h2 class="reveal-copy" id="countdown-heading"><img src="countdown-heading.png" alt="До свадьбы осталось" width="2144" height="274"></h2>
+    <h2 class="reveal-copy script-copy script-frame" id="countdown-heading"><span>До свадьбы осталось</span></h2>
     <p class="countdown-date"><time datetime="2027-05-29T16:00:00+05:00">29 мая 2027 года, 16:00 по Уфе</time></p>
     <dl class="countdown-values reveal-copy" hidden>
       <div><dt>дней</dt><dd></dd></div>
@@ -238,7 +280,7 @@
 <script>
   const column = document.querySelector('.venue-content');
   const venueName = column.querySelector('.venue-name');
-  const venueHeading = column.querySelector('h1 .aligned-line');
+  const venueHeading = column.querySelector('#venue-heading .aligned-line');
   const addressLine = column.querySelector('.address .aligned-line');
 
   function fitLine(line, width) {
@@ -249,7 +291,7 @@
   function alignText() {
     fitLine(venueName, column.getBoundingClientRect().width);
     column.style.setProperty('--venue-font-size', venueName.style.fontSize);
-    const targetWidth = column.querySelector('h1').getBoundingClientRect().width;
+    const targetWidth = column.querySelector('#venue-heading').getBoundingClientRect().width;
     fitLine(venueHeading, targetWidth);
     fitLine(addressLine, targetWidth);
   }
@@ -268,16 +310,10 @@
 
   const blocks = document.querySelectorAll('[data-reveal]');
   const hero = document.getElementById('hero');
-  const schedule = document.getElementById('day-plan');
-  const steps = [...schedule.querySelectorAll('.schedule-step')];
-  let queued = 0;
-  let sequence;
-  let nextStart = 0;
   const observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
       if (!entry.isIntersecting) continue;
-      if (entry.target.classList.contains('schedule-step')) revealThrough(entry.target);
-      else revealHero();
+      revealHero();
     }
   });
 
@@ -292,32 +328,12 @@
 
   function settle(block) {
     observer.unobserve(block);
-    if (block === schedule) steps.forEach(step => observer.unobserve(step));
     block.querySelectorAll('.reveal-copy').forEach(group => groupObserver.unobserve(group));
     block.classList.add('shown', 'settled');
   }
 
-  function decodeImages(element) {
-    const images = element.matches('img') ? [element] : element.querySelectorAll('img');
-    return Promise.all(Array.from(images, img => img.decode()));
-  }
-
-  async function observeGroups(block) {
-    const groups = block.querySelectorAll('.reveal-copy');
-    if (block.classList.contains('raster')) {
-      // Keep the original in place until the background and every lettering strip can be painted.
-      try { await decodeImages(block); } catch { settle(block); return; }
-      if (block.classList.contains('settled')) return;
-      block.classList.add('layers-ready');
-      groups.forEach(group => groupObserver.observe(group));
-      return;
-    }
-    for (const group of groups) {
-      // A late image should start only if its group is visible after decoding.
-      decodeImages(group).then(() => {
-        if (!block.classList.contains('settled') && !group.classList.contains('finished')) groupObserver.observe(group);
-      }).catch(() => finishGroup(group));
-    }
+  function observeGroups(block) {
+    block.querySelectorAll('.reveal-copy').forEach(group => groupObserver.observe(group));
   }
 
   function finishGroup(group) {
@@ -327,29 +343,12 @@
     if (!block.querySelector('.reveal-copy:not(.finished)')) settle(block);
   }
 
-  function revealThrough(step) {
-    if (schedule.classList.contains('settled')) return;
-    if (!sequence) sequence = decodeImages(schedule);
-    // A scroll jump can enter the middle of the plan. Queue earlier rows first.
-    while (queued <= steps.indexOf(step)) {
-      const current = steps[queued++];
-      observer.unobserve(current);
-      sequence = sequence.then(async () => {
-        const delay = nextStart - performance.now();
-        if (delay > 0) await new Promise(resolve => setTimeout(resolve, delay));
-        if (schedule.classList.contains('settled')) return;
-        current.classList.add('started');
-        nextStart = performance.now() + 180;
-      }).catch(() => settle(schedule));
-    }
-  }
-
   async function revealHero() {
     observer.unobserve(hero);
     if (hero.classList.contains('shown')) return;
     try {
-      await decodeImages(hero);
-      hero.classList.add('shown');
+      await document.fonts?.ready;
+      if (!hero.classList.contains('settled')) hero.classList.add('shown');
     } catch { settle(hero); }
   }
 
@@ -371,13 +370,6 @@
       finishGroup(event.target);
       return;
     }
-    if (event.animationName !== 'text-arrival') return;
-    if (event.target.classList.contains('schedule-ink')) {
-      const step = event.target.parentElement;
-      step.classList.add('finished'); // Uncover this row on the original as soon as its motion ends.
-      if (step !== steps[steps.length - 1]) return;
-    }
-    settle(event.target.closest('[data-reveal]'));
   });
   document.addEventListener('focusin', event => {
     const group = event.target.closest('.reveal-copy') || event.target.querySelector('.reveal-copy');
@@ -392,12 +384,44 @@
 
   blocks.forEach(block => {
     if (block === hero && !CSS.supports('mask-image', 'linear-gradient(to right, transparent, black)')) settle(hero);
-    else if (block === schedule) steps.forEach(step => observer.observe(step));
     else if (block === hero) observer.observe(hero);
     else observeGroups(block);
   });
   showDestination();
   document.documentElement.classList.add('motion-ready');
+})();
+</script>
+<script src="scripts/hero-parallax.js" defer></script>
+<script src="scripts/hero-sea.js" defer></script>
+<script>
+(() => {
+  const schedule = document.getElementById('day-plan');
+  if (!schedule || !('IntersectionObserver' in window) || !window.matchMedia) return;
+  const motion = matchMedia('(prefers-reduced-motion: no-preference)');
+  if (!motion.matches) return;
+  const parts = [...schedule.querySelectorAll('.schedule-heading, .schedule-row')];
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }
+  }, { rootMargin: '0px 0px -24px 0px', threshold: 0.15 });
+  function showAll() {
+    observer.disconnect();
+    schedule.classList.remove('motion-enabled');
+    parts.forEach(part => part.classList.add('is-visible'));
+  }
+  function showDestination() {
+    if (location.hash === '#day-plan' || location.hash === '#schedule-heading') showAll();
+  }
+  schedule.classList.add('motion-enabled');
+  parts.forEach(part => observer.observe(part));
+  const motionChanged = () => { if (!motion.matches) showAll(); };
+  if (motion.addEventListener) motion.addEventListener('change', motionChanged);
+  else motion.addListener(motionChanged);
+  window.addEventListener('hashchange', showDestination);
+  showDestination();
 })();
 </script>
 </body>

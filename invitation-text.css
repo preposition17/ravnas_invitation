@@ -1,0 +1,226 @@
+/* Live lettering uses the same proportional canvas as the supplied artwork. */
+@font-face {
+  font-family: "Invitation Bodoni";
+  src: url("assets/fonts/BodoniModa.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Invitation Script";
+  src: url("assets/fonts/GreatVibes-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Invitation Sans";
+  src: url("assets/fonts/Roboto.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+.invitation { container-type: inline-size; }
+.script-copy {
+  font-family: "Invitation Script", cursive;
+  font-weight: 400;
+  font-style: normal;
+  white-space: nowrap;
+}
+#hero, #couple, #calendar { container-type: inline-size; }
+.invitation .hero-names {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  color: #fdb856;
+  font-family: "Invitation Bodoni", "Times New Roman", serif;
+  font-size: 23.5cqi;
+  font-weight: 400;
+  font-optical-sizing: none;
+  font-variation-settings: "opsz" 24;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.hero-names .hero-lettering {
+  position: absolute;
+  left: 50%;
+  width: max-content;
+  display: block;
+  clip-path: none;
+  transform-origin: 50% 50%;
+  white-space: nowrap;
+}
+.hero-names .hero-ravil { top: 34.25%; transform: translateX(-50%) scaleX(.59); }
+.hero-names .hero-amp { top: 46%; left: 50.3%; font-size: 12.3cqi; transform: translateX(-50%) scale(.876, .97); }
+.hero-names .hero-anastasia { top: 52.17%; left: 50.6%; font-size: 21.9cqi; transform: translateX(-50%) scale(.507, .974); }
+#couple { color: white; }
+.couple-heading {
+  position: absolute;
+  top: 7.87%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 13cqi;
+  font-weight: 400;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: scaleX(.69);
+}
+.couple-date {
+  position: absolute;
+  top: 87.9%;
+  left: 50%;
+  width: max-content;
+  font-size: 16cqi;
+  line-height: 1;
+  transform: translateX(-50%) skewX(-23deg) scale(1.05, .85);
+  -webkit-text-stroke: .009em #41080f;
+}
+#calendar { color: white; background: #41080f; }
+.calendar-heading {
+  position: absolute;
+  top: 10.35%;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 6.666667cqi;
+  font-weight: 400;
+  line-height: 1.32;
+  text-transform: uppercase;
+}
+.calendar-message {
+  position: absolute;
+  left: 16.388889%;
+  width: 67.222222%;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 3.333333cqi;
+  font-weight: 400;
+  line-height: 1.225;
+  text-align: justify;
+  text-align-last: center;
+  -webkit-text-stroke: .1px #41080f;
+}
+.calendar-message-first { top: 25.43%; }
+.calendar-message-second { top: 37.93%; }
+.calendar-days {
+  position: absolute;
+  top: 55.208333%;
+  left: 0;
+  width: 100%;
+  height: 21.25%;
+  display: grid;
+  grid-template-columns: 31.481481% 37.037037% 31.481481%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.calendar-day { position: relative; min-width: 0; }
+.calendar-weekday {
+  position: absolute;
+  top: 7.6%;
+  left: 0;
+  width: 100%;
+  font-size: 3.148148cqi;
+  line-height: 1;
+  text-transform: uppercase;
+  -webkit-text-stroke: .08px #41080f;
+}
+.calendar-day time {
+  position: absolute;
+  top: 35.1%;
+  left: 2.87cqi;
+  font-family: "Invitation Sans", Arial, sans-serif;
+  font-size: 10cqi;
+  font-weight: 180;
+  line-height: 1;
+  transform: scaleX(.95);
+  transform-origin: left;
+}
+.calendar-note {
+  position: absolute;
+  top: 63.2%;
+  left: 0;
+  width: 100%;
+  font-size: 3.518519cqi;
+  line-height: 1.15;
+  -webkit-text-stroke: .06px #41080f;
+}
+.calendar-day:last-child time { left: 3.055556cqi; }
+.calendar-save {
+  position: absolute;
+  top: 87.7%;
+  left: 61.5%;
+  width: max-content;
+  margin: 0;
+  font-size: 10.5cqi;
+  line-height: 1;
+  transform: translateX(-50%) skewX(-23deg) scale(.77, .73);
+  -webkit-text-stroke: .008em #41080f;
+}
+/* Each inscription occupies the same space on paper as the original lettering.
+   Only the ink scales; adjacent artwork follows normal document flow. */
+.invitation .script-frame {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  place-items: center;
+  container-type: size;
+  line-height: 1;
+}
+.script-frame span {
+  display: block;
+  width: max-content;
+  font-size: var(--script-size);
+  -webkit-text-stroke: .008em var(--paper, white);
+  transform: translate(var(--script-inset, 0), var(--script-offset, 0)) skewX(-23deg) scaleY(var(--script-height));
+}
+.handwritten-top {
+  aspect-ratio: 1874 / 237;
+  --script-size: 13.5cqi;
+  --script-height: .85;
+  --script-offset: .03em;
+}
+.handwritten-bottom {
+  aspect-ratio: 1788 / 271;
+  --script-size: 13.2cqi;
+  --script-height: .89;
+  --script-inset: -.1em;
+}
+.handwritten { color: #41080f; }
+#palette-heading {
+  aspect-ratio: 2061 / 292;
+  --script-size: 16.8cqi;
+  --script-height: .77;
+  --script-offset: .02em;
+  color: black;
+}
+.thanks-copy .script-frame { margin: 0; }
+.thanks-copy .script-frame span { -webkit-text-stroke: 0; }
+.thanks-love {
+  aspect-ratio: 952 / 182;
+  --script-size: 27.5cqi;
+  --script-height: .72;
+  --script-offset: .08em;
+}
+.thanks-names {
+  aspect-ratio: 1828 / 203;
+  --script-size: 14.3cqi;
+  --script-height: .84;
+  --script-offset: .13em;
+}
+#countdown-heading {
+  aspect-ratio: 2144 / 274;
+  --script-size: 14.6cqi;
+  --script-height: .98;
+  --script-offset: .15em;
+  --paper: #41080f;
+  text-shadow: 0 1px 3px #41080f;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .motion-ready #hero:not(.shown) .hero-lettering { opacity: 0; }
+}
+@media print {
+  .hero-names .hero-lettering { opacity: 1 !important; mask-image: none !important; }
+}
