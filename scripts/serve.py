@@ -11,7 +11,7 @@ SITE_ROOT = Path(__file__).resolve().parent.parent
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Serve the invitation website locally.")
-    parser.add_argument("--host", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
+    parser.add_argument("--host", default="0.0.0.0", help="Bind address (default: 127.0.0.1)")
     parser.add_argument("--port", type=int, default=8000, help="HTTP port (default: 8000; 0 selects a free port)")
     args = parser.parse_args()
     if not 0 <= args.port <= 65535:

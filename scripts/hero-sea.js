@@ -2,6 +2,7 @@
   const layer = document.querySelector('#hero .hero-sea');
   if (!layer || !window.matchMedia || !('IntersectionObserver' in window)) return;
 
+  const hero = layer.closest('#hero');
   const still = layer.querySelector('img');
   const canvas = layer.querySelector('canvas');
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
@@ -22,12 +23,19 @@
   let lastPaint = null;
   let elapsed = 0;
   let resized = true;
+  let displayWidth;
+  let displayHeight;
+  let shiftX = 0;
+  let shiftY = 0;
+  let parallaxChanged = false;
 
   const vertexSource = `#version 300 es
     precision highp float;
     in vec2 aUv;
     uniform sampler2D uMotion;
+    uniform sampler2D uDepth;
     uniform vec2 uImageSize;
+    uniform vec2 uParallax;
     uniform float uHorizon;
     uniform float uPhase;
     uniform vec4 uWave;
@@ -56,8 +64,22 @@
     }
 
     void main() {
-      gl_Position = vec4(aUv.x * 2.0 - 1.0, 1.0 - aUv.y * 2.0, 0.0, 1.0);
       vec2 position = aUv * uImageSize - 0.5;
+      vec2 projected = aUv;
+      if (position.y > uHorizon && any(notEqual(uParallax, vec2(0.0)))) {
+        // The map covers the water from the horizon to the bottom of the layer.
+        vec2 depthUv = clamp(vec2(position.x, position.y - uHorizon)
+          / vec2(uImageSize.x - 1.0, uImageSize.y - 1.0 - uHorizon), 0.0, 1.0);
+        vec2 texels = vec2(textureSize(uDepth, 0));
+        float proximity = texture(uDepth, (vec2(0.5) + depthUv * (texels - 1.0)) / texels).r;
+        // The existing layer transform carries the horizon. Fade the added relief at the edges.
+        float edgeX = min(position.x + 0.5, uImageSize.x - 0.5 - position.x);
+        float edgeY = uImageSize.y - 0.5 - position.y;
+        float interior = smoothstep(0.0, 74.0, edgeX) * smoothstep(0.0, 104.0, edgeY)
+          * smoothstep(uHorizon, uHorizon + 44.0, position.y);
+        projected += uParallax * (0.7 * proximity * interior);
+      }
+      gl_Position = vec4(projected * vec2(2.0, -2.0) + vec2(-1.0, 1.0), 0.0, 1.0);
       vec2 anchor = position;
       float nearWeight = smoothstep(blendStart, blendEnd, position.y);
       vLight = 1.0;
@@ -208,7 +230,7 @@
     return indices.length;
   }
 
-  function createRenderer(motionMap, slopeMap) {
+  function createRenderer(motionMap, slopeMap, depthMap) {
     const vertex = compile(gl.VERTEX_SHADER, vertexSource);
     const fragment = compile(gl.FRAGMENT_SHADER, fragmentSource);
     const program = gl.createProgram();
@@ -226,15 +248,18 @@
     bindTexture(still, 0, true);
     bindTexture(motionMap, 1, false);
     bindTexture(slopeMap, 2, false);
+    if (depthMap) bindTexture(depthMap, 3, false);
     gl.uniform1i(gl.getUniformLocation(program, 'uSea'), 0);
     gl.uniform1i(gl.getUniformLocation(program, 'uMotion'), 1);
     gl.uniform1i(gl.getUniformLocation(program, 'uSlopes'), 2);
+    gl.uniform1i(gl.getUniformLocation(program, 'uDepth'), depthMap ? 3 : 0);
     gl.uniform2f(gl.getUniformLocation(program, 'uImageSize'), width, height);
     gl.uniform1f(gl.getUniformLocation(program, 'uHorizon'), horizon);
     return {
       count: bindMesh(program),
       phase: gl.getUniformLocation(program, 'uPhase'),
       wave: gl.getUniformLocation(program, 'uWave'),
+      parallax: depthMap ? gl.getUniformLocation(program, 'uParallax') : null,
     };
   }
 
@@ -261,7 +286,7 @@
     }
     if (!renderer) return;
 
-    if (resized || lastPaint === null || time - lastPaint >= frameInterval - 2) {
+    if (resized || (renderer.parallax && parallaxChanged) || lastPaint === null || time - lastPaint >= frameInterval - 2) {
       if (resized) {
         const w = layer.clientWidth;
         const h = layer.clientHeight;
@@ -270,6 +295,9 @@
         canvas.width = Math.max(1, Math.round(w * scale));
         canvas.height = Math.max(1, Math.round(h * scale));
         gl.viewport(0, 0, canvas.width, canvas.height);
+        const bounds = layer.getBoundingClientRect();
+        displayWidth = bounds.width;
+        displayHeight = bounds.height;
         resized = false;
       }
       if (lastPaint !== null) elapsed = (elapsed + time - lastPaint) % loopDuration;
@@ -277,6 +305,14 @@
       const phase = elapsed / loopDuration * Math.PI * 2;
       gl.uniform1f(renderer.phase, phase);
       gl.uniform4f(renderer.wave, Math.sin(phase), Math.cos(phase) - 1, Math.sin(2 * phase), Math.cos(2 * phase) - 1);
+      if (renderer.parallax) {
+        const x = shiftX / displayWidth;
+        const y = shiftY / displayHeight;
+        // Bound movement in image pixels so it stays smooth in narrow layouts.
+        const strength = Math.min(1, 34 / Math.hypot(x * width, y * height));
+        gl.uniform2f(renderer.parallax, x * strength, y * strength);
+        parallaxChanged = false;
+      }
       gl.drawElements(gl.TRIANGLES, renderer.count, gl.UNSIGNED_SHORT, 0);
       if (canvas.hidden && !gl.isContextLost()) showAnimation(true);
     }
@@ -299,10 +335,15 @@
           return;
         }
       }
-      images ??= Promise.all([still.decode(), loadMap('02-sea-motion.png'), loadMap('02-sea-slopes.png')]);
-      const [, motionMap, slopeMap] = await images;
+      images ??= Promise.all([
+        still.decode(),
+        loadMap('02-sea-motion.png'),
+        loadMap('02-sea-slopes.png'),
+        loadMap('02-sea-depth.png').catch(() => null),
+      ]);
+      const [, motionMap, slopeMap, depthMap] = await images;
       if (!contextLost && !gl.isContextLost()) {
-        renderer = createRenderer(motionMap, slopeMap);
+        renderer = createRenderer(motionMap, slopeMap, depthMap);
         resized = true;
       }
     } catch (error) {
@@ -339,10 +380,16 @@
     contextLost = false;
     sync();
   });
+  hero.addEventListener('hero-parallax', ({ detail: { x, y } }) => {
+    if (x === shiftX && y === shiftY) return;
+    shiftX = x;
+    shiftY = y;
+    parallaxChanged = true;
+  });
   new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     sync();
-  }).observe(layer.closest('#hero'));
+  }).observe(hero);
   const resize = () => { resized = true; sync(); };
   if ('ResizeObserver' in window) new ResizeObserver(resize).observe(layer);
   window.addEventListener('resize', resize);

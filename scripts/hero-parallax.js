@@ -47,7 +47,16 @@
     landscape.style.setProperty('--scroll-y', `${scrollY}px`);
     landscape.style.setProperty('--pointer-x', `${pointerX}px`);
     landscape.style.setProperty('--pointer-y', `${pointerY}px`);
-    renderPortraits(width, height, scrollY);
+
+    // Brighter, nearer points follow the pointer farther and rise faster as the page scrolls.
+    const scrollLimit = width * .02;
+    const scrollShift = scrollLimit ? scrollLimit * Math.tanh(scrollY * .85 / scrollLimit) : 0;
+    const x = pointerX * 1.6;
+    const y = pointerY * 1.6 - scrollShift;
+    landscape.style.setProperty('--depth-shift-x', `${x}px`);
+    landscape.style.setProperty('--depth-shift-y', `${y}px`);
+    hero.dispatchEvent(new CustomEvent('hero-parallax', { detail: { x, y } }));
+    renderPortraits(width, height, x, y);
     lastFrame = moving ? time : null;
     if (moving) requestFrame();
   }
@@ -58,19 +67,14 @@
     hero.classList.toggle('portraits-animated', show);
   }
 
-  function renderPortraits(width, height, scrollY) {
+  function renderPortraits(width, height, x, y) {
     if (!width || !height || !portraitCanvas || !portraitImages.length || portraitsFailed || contextLost) return;
     if (!paintPortraits) {
       if (!preparingPortraits) preparePortraits();
       return;
     }
 
-    // Brighter, nearer points follow the pointer farther and rise faster as the page scrolls.
-    const scrollLimit = width * .02;
-    const scrollShift = scrollLimit * Math.tanh(scrollY * .85 / scrollLimit);
-    const x = pointerX * 1.6;
-    const y = pointerY * 1.6 - scrollShift;
-    const moving = !!(pointerX || pointerY || scrollY);
+    const moving = !!(x || y);
     if (moving) paintPortraits(width, height, x, y);
     showPortraitCanvas(moving);
   }

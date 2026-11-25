@@ -69,10 +69,12 @@
   .hero-landscape, .hero-depth { position: absolute; inset: 0; pointer-events: none; }
   .hero-landscape {
     /* The 1092 × 1941 layers include 76px on each side and 134px above and below the hero crop. */
+    --landscape-scale: 1.06;
     inset: -8.01% -8.085%;
-    transform: scale(1.06);
+    transform: scale(var(--landscape-scale));
   }
   .hero-depth { width: 100%; height: 100%; }
+  .hero-horizon { --scroll-depth: .04; --pointer-depth: .04; }
   .hero-sea > img, .hero-sea > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .hero-sea.is-animated > img { visibility: hidden; }
   .hero-portrait { position: absolute; height: auto; transform-origin: top left; pointer-events: none; }
@@ -89,8 +91,10 @@
   @media (prefers-reduced-motion: no-preference) {
     .hero-depth {
       transform: translate3d(
-        calc(var(--pointer-x, 0px) * var(--pointer-depth)),
-        calc(var(--scroll-y, 0px) * var(--scroll-depth) + var(--pointer-y, 0px) * var(--pointer-depth)),
+        calc(var(--pointer-x, 0px) * var(--pointer-depth) +
+          var(--depth-shift-x, 0px) * var(--coast-depth, 0) / var(--landscape-scale)),
+        calc(var(--scroll-y, 0px) * var(--scroll-depth) + var(--pointer-y, 0px) * var(--pointer-depth) +
+          var(--depth-shift-y, 0px) * var(--coast-depth, 0) / var(--landscape-scale)),
         0
       );
     }
@@ -138,14 +142,15 @@
   <div class="raster" id="hero" data-reveal>
     <div class="hero-landscape" aria-hidden="true">
       <img class="hero-depth" style="--scroll-depth: .96; --pointer-depth: .16" src="assets/images/first_background_9_16_parallax/01-sky.png" alt="" width="1092" height="1941" fetchpriority="high">
-      <div class="hero-depth hero-sea" style="--scroll-depth: .88; --pointer-depth: .27">
+      <div class="hero-depth hero-horizon hero-sea">
         <img src="assets/images/first_background_9_16_parallax/02-sea-still.webp" alt="" width="1092" height="1941" fetchpriority="high">
         <canvas hidden></canvas>
       </div>
-      <img class="hero-depth" style="--scroll-depth: .81; --pointer-depth: .38" src="assets/images/first_background_9_16_parallax/03-coast-far.png" alt="" width="1092" height="1941">
-      <img class="hero-depth" style="--scroll-depth: .75; --pointer-depth: .49" src="assets/images/first_background_9_16_parallax/04-coast-mid-far.png" alt="" width="1092" height="1941">
-      <img class="hero-depth" style="--scroll-depth: .69; --pointer-depth: .60" src="assets/images/first_background_9_16_parallax/05-coast-mid-near.png" alt="" width="1092" height="1941">
-      <img class="hero-depth" style="--scroll-depth: .61; --pointer-depth: .71" src="assets/images/first_background_9_16_parallax/06-coast-near.png" alt="" width="1092" height="1941">
+      <img class="hero-depth hero-horizon" src="assets/images/first_background_9_16_parallax/03-coast-far.png" alt="" width="1092" height="1941">
+      <!-- Match the water's parallax at the median visible waterline of each headland. -->
+      <img class="hero-depth hero-horizon" style="--coast-depth: .03" src="assets/images/first_background_9_16_parallax/04-coast-mid-far.png" alt="" width="1092" height="1941">
+      <img class="hero-depth hero-horizon" style="--coast-depth: .11" src="assets/images/first_background_9_16_parallax/05-coast-mid-near.png" alt="" width="1092" height="1941">
+      <img class="hero-depth hero-horizon" style="--coast-depth: .26" src="assets/images/first_background_9_16_parallax/06-coast-near.png" alt="" width="1092" height="1941">
       <img class="hero-depth" style="--scroll-depth: .31; --pointer-depth: .82" src="assets/images/first_background_9_16_parallax/07-ground.png" alt="" width="1092" height="1941">
       <img class="hero-depth" style="--scroll-depth: .22; --pointer-depth: .88" src="assets/images/first_background_9_16_parallax/08-tree.png" alt="" width="1092" height="1941">
       <img class="hero-depth" style="--scroll-depth: .14; --pointer-depth: 1" src="assets/images/first_background_9_16_parallax/09-flowers.png" alt="" width="1092" height="1941">
