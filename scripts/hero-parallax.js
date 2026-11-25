@@ -4,9 +4,16 @@
 
   const hero = landscape.parentElement;
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
+  const touch = matchMedia('(any-pointer: coarse)');
+  const motionSensor = window.isSecureContext ? window.DeviceMotionEvent : undefined;
+  const tiltButton = hero.querySelector('.hero-tilt');
   const portraitCanvas = hero.querySelector('.hero-portrait-render');
   const portraitImages = [...hero.querySelectorAll('.hero-portrait[data-depth-map]')];
   const maxDepthStep = 12;
+  const maxViewX = 8;
+  const maxViewY = 6;
+  const tiltDeadZone = 1.5 * Math.PI / 180;
+  const tiltRange = 22 * Math.PI / 180;
   let gl;
   let portraitSources;
   let paintPortraits;
@@ -17,8 +24,12 @@
   let frame = null;
   let lastFrame = null;
   let pointer = null;
-  let pointerX = 0;
-  let pointerY = 0;
+  let viewX = 0;
+  let viewY = 0;
+  let tiltPermission = typeof motionSensor?.requestPermission === 'function' ? 'prompt' : 'granted';
+  let neutralTilt;
+  let tiltX = 0;
+  let tiltY = 0;
 
   function requestFrame() {
     if (visible && motion.matches && !document.hidden && frame === null) frame = requestAnimationFrame(render);
@@ -31,28 +42,28 @@
     const { top, right, bottom, left, width, height } = hero.getBoundingClientRect();
     const scrollY = Math.min(Math.max(0, -top) * .14, height * .08);
     const inside = pointer && pointer.x >= left && pointer.x <= right && pointer.y >= top && pointer.y <= bottom;
-    const targetX = inside ? ((pointer.x - left) / width * 2 - 1) * 8 : 0;
-    const targetY = inside ? ((pointer.y - top) / height * 2 - 1) * 6 : 0;
+    const targetX = inside ? ((pointer.x - left) / width * 2 - 1) * maxViewX : tiltX;
+    const targetY = inside ? ((pointer.y - top) / height * 2 - 1) * maxViewY : tiltY;
 
     const elapsed = lastFrame === null ? 16 : time - lastFrame;
     const ease = 1 - Math.exp(-elapsed / 85);
-    pointerX += (targetX - pointerX) * ease;
-    pointerY += (targetY - pointerY) * ease;
-    const moving = Math.abs(targetX - pointerX) > .05 || Math.abs(targetY - pointerY) > .05;
+    viewX += (targetX - viewX) * ease;
+    viewY += (targetY - viewY) * ease;
+    const moving = Math.abs(targetX - viewX) > .05 || Math.abs(targetY - viewY) > .05;
     if (!moving) {
-      pointerX = targetX;
-      pointerY = targetY;
+      viewX = targetX;
+      viewY = targetY;
     }
 
     landscape.style.setProperty('--scroll-y', `${scrollY}px`);
-    landscape.style.setProperty('--pointer-x', `${pointerX}px`);
-    landscape.style.setProperty('--pointer-y', `${pointerY}px`);
+    landscape.style.setProperty('--pointer-x', `${viewX}px`);
+    landscape.style.setProperty('--pointer-y', `${viewY}px`);
 
-    // Brighter, nearer points follow the pointer farther and rise faster as the page scrolls.
+    // Brighter, nearer points react more to the viewing angle and rise faster as the page scrolls.
     const scrollLimit = width * .02;
     const scrollShift = scrollLimit ? scrollLimit * Math.tanh(scrollY * .85 / scrollLimit) : 0;
-    const x = pointerX * 1.6;
-    const y = pointerY * 1.6 - scrollShift;
+    const x = viewX * 1.6;
+    const y = viewY * 1.6 - scrollShift;
     landscape.style.setProperty('--depth-shift-x', `${x}px`);
     landscape.style.setProperty('--depth-shift-y', `${y}px`);
     hero.dispatchEvent(new CustomEvent('hero-parallax', { detail: { x, y } }));
@@ -301,7 +312,7 @@
         const [a, b, c, d] = placement.rotation;
         const [slopeX, slopeY] = placement.depthSlope;
         const projectedSlope = Math.abs(a * x + b * y) * slopeX + Math.abs(c * x + d * y) * slopeY;
-        // Keep at least 55% of each triangle's original area, even when scroll and pointer shifts combine.
+        // Keep at least 55% of each triangle's original area when scroll and viewing shifts combine.
         gl.uniform1f(relief, Math.min(.7, .45 / projectedSlope));
         gl.uniform2fv(origin, placement.origin);
         gl.uniform2fv(size, placement.size);
@@ -318,18 +329,84 @@
     requestFrame();
   }
 
-  function resetPointer() {
+  function resetView() {
     pointer = null;
-    pointerX = 0;
-    pointerY = 0;
+    viewX = 0;
+    viewY = 0;
     lastFrame = null;
   }
 
+  function resetTilt() {
+    neutralTilt = undefined;
+    tiltX = 0;
+    tiltY = 0;
+  }
+
+  function tiltOffset(delta, limit) {
+    // Use the shorter arc when the angle crosses ±π.
+    const angle = Math.atan2(Math.sin(delta), Math.cos(delta));
+    const amount = Math.min(1, Math.max(0, (Math.abs(angle) - tiltDeadZone) / tiltRange));
+    return amount ? Math.sign(angle) * amount * limit : 0;
+  }
+
+  function readTilt({ accelerationIncludingGravity: gravity }) {
+    if (!gravity || !Number.isFinite(gravity.x) || !Number.isFinite(gravity.y) || !Number.isFinite(gravity.z)) return;
+    const { x, y, z } = gravity;
+    const magnitude = Math.hypot(x, y, z);
+    if (magnitude < 5 || magnitude > 15) return;
+
+    const angle = screen.orientation?.angle ?? window.orientation ?? 0;
+    const radians = angle * Math.PI / 180;
+    const screenX = x * Math.cos(radians) - y * Math.sin(radians);
+    const screenY = x * Math.sin(radians) + y * Math.cos(radians);
+    const roll = Math.atan2(-screenX, Math.hypot(screenY, z));
+    // Include Z so pitch still changes when the screen is held nearly upright.
+    const pitch = Math.atan2(screenY, z);
+    if (neutralTilt?.angle !== angle) {
+      resetTilt();
+      neutralTilt = { angle, roll, pitch };
+      requestFrame();
+      return;
+    }
+
+    const nextX = tiltOffset(roll - neutralTilt.roll, maxViewX);
+    const nextY = tiltOffset(pitch - neutralTilt.pitch, maxViewY);
+    if (nextX === tiltX && nextY === tiltY) return;
+    tiltX = nextX;
+    tiltY = nextY;
+    requestFrame();
+  }
+
+  function updateTilt() {
+    if (!motionSensor) return;
+    const active = touch.matches && visible && motion.matches && !document.hidden;
+    if (tiltButton) tiltButton.hidden = !active || tiltPermission !== 'prompt';
+    if (active && tiltPermission === 'granted') {
+      window.addEventListener('devicemotion', readTilt);
+    } else {
+      window.removeEventListener('devicemotion', readTilt);
+      resetTilt();
+    }
+  }
+
+  tiltButton?.addEventListener('click', async () => {
+    tiltButton.disabled = true;
+    try {
+      tiltPermission = await motionSensor.requestPermission();
+    } catch {
+      tiltPermission = 'denied';
+    } finally {
+      updateTilt();
+      tiltButton.disabled = false;
+    }
+  });
+
   function updateMotion() {
-    if (!motion.matches || document.hidden) {
-      resetPointer();
+    if (!visible || !motion.matches || document.hidden) {
+      resetView();
       showPortraitCanvas(false);
     }
+    updateTilt();
     requestFrame();
   }
 
@@ -346,11 +423,7 @@
 
   const observer = new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
-    if (visible) requestFrame();
-    else {
-      resetPointer();
-      showPortraitCanvas(false);
-    }
+    updateMotion();
   });
   observer.observe(hero);
 
@@ -365,6 +438,8 @@
   });
   hero.addEventListener('pointerleave', clearPointer);
   hero.addEventListener('pointercancel', clearPointer);
+  if (touch.addEventListener) touch.addEventListener('change', updateMotion);
+  else touch.addListener(updateMotion);
   if (motion.addEventListener) motion.addEventListener('change', updateMotion);
   else motion.addListener(updateMotion);
 })();
