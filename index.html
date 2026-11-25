@@ -75,6 +75,12 @@
   .hero-depth { width: 100%; height: 100%; }
   .hero-sea > img, .hero-sea > canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   .hero-sea.is-animated > img { visibility: hidden; }
+  .hero-portrait { position: absolute; height: auto; transform-origin: top left; pointer-events: none; }
+  .hero-portrait-render { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  #hero.portraits-animated > .hero-portrait { visibility: hidden; }
+  /* The portrait positions are relative to the 390 × 694 artwork in Figma. */
+  .hero-portrait-ravil { top: 10.23%; left: -4.19%; width: 61.79%; transform: rotate(10.2deg); }
+  .hero-portrait-nastya { top: 19.88%; left: 52.9%; width: 64.87%; transform: rotate(9.64deg); }
   .motion-ready [data-reveal]:not(.settled) .reveal-copy:not(.started) { opacity: 0; }
   @keyframes group-arrival {
     from { opacity: 0; translate: 0 18px; }
@@ -112,6 +118,8 @@
     .hero-depth { transform: none; }
     .hero-sea.is-animated > img { visibility: visible; }
     .hero-sea > canvas { display: none; }
+    #hero.portraits-animated > .hero-portrait { visibility: visible; }
+    .hero-portrait-render { display: none; }
   }
   .leaf-trail img { height: auto; }
   .invitation section { grid-template-columns: minmax(0, 1fr); }
@@ -142,6 +150,9 @@
       <img class="hero-depth" style="--scroll-depth: .22; --pointer-depth: .88" src="assets/images/first_background_9_16_parallax/08-tree.png" alt="" width="1092" height="1941">
       <img class="hero-depth" style="--scroll-depth: .14; --pointer-depth: 1" src="assets/images/first_background_9_16_parallax/09-flowers.png" alt="" width="1092" height="1941">
     </div>
+    <img class="hero-portrait hero-portrait-ravil" src="assets/images/ravil-renaissance-peek-v2.png" data-depth-map="assets/images/ravil-renaissance-peek-v2-depth.png" alt="" width="1254" height="1254">
+    <img class="hero-portrait hero-portrait-nastya" src="assets/images/nastya-renaissance-peek-v3.png" data-depth-map="assets/images/nastya-renaissance-peek-v3-depth.png" alt="" width="1536" height="1024">
+    <canvas class="hero-portrait-render" aria-hidden="true" hidden></canvas>
     <h1 class="hero-names" lang="en" aria-label="Ravil &amp; Anastasia">
       <span class="hero-lettering hero-wipe hero-ravil">Ravil</span>
       <span class="hero-lettering hero-amp">&amp;</span>
