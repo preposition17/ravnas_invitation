@@ -80,20 +80,6 @@
   .hero-portrait { position: absolute; height: auto; transform-origin: top left; pointer-events: none; }
   .hero-portrait-render { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
   #hero.portraits-animated > .hero-portrait { visibility: hidden; }
-  .hero-tilt {
-    position: absolute;
-    top: min(calc(100% - 56px), calc(100svh - 56px));
-    right: 12px;
-    min-height: 44px;
-    padding: 0 12px;
-    border: 1px solid #fff2d999;
-    border-radius: 999px;
-    background: #321c16e8;
-    color: #fff2d9;
-    font: 14px/1.2 Georgia, serif;
-    cursor: pointer;
-  }
-  .hero-tilt:focus-visible { outline: 2px solid #fff2d9; outline-offset: 2px; }
   /* The portrait positions are relative to the 390 × 694 artwork in Figma. */
   .hero-portrait-ravil { top: 10.23%; left: -4.19%; width: 61.79%; transform: rotate(10.2deg); }
   .hero-portrait-nastya { top: 19.88%; left: 52.9%; width: 64.87%; transform: rotate(9.64deg); }
@@ -138,7 +124,6 @@
     .hero-sea > canvas { display: none; }
     #hero.portraits-animated > .hero-portrait { visibility: visible; }
     .hero-portrait-render { display: none; }
-    .hero-tilt { display: none; }
   }
   .leaf-trail img { height: auto; }
   .invitation section { grid-template-columns: minmax(0, 1fr); }
@@ -178,7 +163,6 @@
       <span class="hero-lettering hero-amp">&amp;</span>
       <span class="hero-lettering hero-wipe hero-anastasia">Anastasia</span>
     </h1>
-    <button class="hero-tilt" type="button" hidden>Включить наклон</button>
   </div>
   <div class="raster" id="couple" data-reveal>
     <img class="slide" src="scroll-reveal/couple-background.png" alt="Равиль и Анастасия в кружевной рамке" width="1080" height="1920">

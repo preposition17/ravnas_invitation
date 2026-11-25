@@ -5,8 +5,7 @@
   const hero = landscape.parentElement;
   const motion = matchMedia('(prefers-reduced-motion: no-preference)');
   const touch = matchMedia('(any-pointer: coarse)');
-  const motionSensor = window.isSecureContext ? window.DeviceMotionEvent : undefined;
-  const tiltButton = hero.querySelector('.hero-tilt');
+  const supportsDeviceMotion = window.isSecureContext && 'DeviceMotionEvent' in window;
   const portraitCanvas = hero.querySelector('.hero-portrait-render');
   const portraitImages = [...hero.querySelectorAll('.hero-portrait[data-depth-map]')];
   const maxDepthStep = 12;
@@ -26,7 +25,6 @@
   let pointer = null;
   let viewX = 0;
   let viewY = 0;
-  let tiltPermission = typeof motionSensor?.requestPermission === 'function' ? 'prompt' : 'granted';
   let neutralTilt;
   let tiltX = 0;
   let tiltY = 0;
@@ -378,28 +376,16 @@
   }
 
   function updateTilt() {
-    if (!motionSensor) return;
+    if (!supportsDeviceMotion) return;
     const active = touch.matches && visible && motion.matches && !document.hidden;
-    if (tiltButton) tiltButton.hidden = !active || tiltPermission !== 'prompt';
-    if (active && tiltPermission === 'granted') {
+    if (active) {
+      // Use readings when the browser already allows them without a prompt.
       window.addEventListener('devicemotion', readTilt);
     } else {
       window.removeEventListener('devicemotion', readTilt);
       resetTilt();
     }
   }
-
-  tiltButton?.addEventListener('click', async () => {
-    tiltButton.disabled = true;
-    try {
-      tiltPermission = await motionSensor.requestPermission();
-    } catch {
-      tiltPermission = 'denied';
-    } finally {
-      updateTilt();
-      tiltButton.disabled = false;
-    }
-  });
 
   function updateMotion() {
     if (!visible || !motion.matches || document.hidden) {
